@@ -21,7 +21,6 @@ const animalImages = [
   { src: "/assets/animals/panda.jpg", name: "Panda" },
   { src: "/assets/animals/kangaroo.png", name: "Kangaroo" },
   { src: "/assets/animals/bear.jpg", name: "Bear" },
-  { src: "/assets/animals/wolf.jpg", name: "Wolf" },
   { src: "/assets/animals/fox.jpg", name: "Fox" },
   { src: "/assets/animals/deer.jpg", name: "Deer" },
   { src: "/assets/animals/camel.jpg", name: "Camel" },
