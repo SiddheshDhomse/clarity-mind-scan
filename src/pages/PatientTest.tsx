@@ -220,7 +220,7 @@ export default function PatientTest() {
             <img
               src={animalTestImages[animalIndex].src}
               alt={`Animal ${animalIndex + 1}`}
-              className="rounded-lg h-48 w-64 object-cover mx-auto"
+              className="rounded-lg max-h-64 max-w-xs w-full bg-white object-contain mx-auto border"
             />
             <input
               type="text"
