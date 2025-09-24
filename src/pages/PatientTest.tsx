@@ -10,28 +10,29 @@ import { Link, useNavigate } from "react-router-dom";
 // 1. List of animal images and their correct names
 
 const animalImages = [
-  { src: "/assets/animals/Lion.jpg", name: "Lion" },
-  { src: "/assets/animals/Tiger.jpg", name: "Tiger" },
-  { src: "/assets/animals/Elephant.jpg", name: "Elephant" },
-  { src: "/assets/animals/Giraffe.jpg", name: "Giraffe" },
-  { src: "/assets/animals/Zebra.jpg", name: "Zebra" },
-  { src: "/assets/animals/Leopard.png", name: "Leopard" },
+  { src: "/assets/animals/lion.jpg", name: "Lion" },
+  { src: "/assets/animals/tiger.jpg", name: "Tiger" },
+  { src: "/assets/animals/elephant.jpg", name: "Elephant" },
+  { src: "/assets/animals/giraffe.jpg", name: "Giraffe" },
+  { src: "/assets/animals/zebra.jpg", name: "Zebra" },
+  { src: "/assets/animals/leopard.png", name: "Leopard" },
   { src: "/assets/animals/Rhinoceros.jpg", name: "Rhinoceros" },
   { src: "/assets/animals/Hippopotamus.jpg", name: "Hippopotamus" },
-  { src: "/assets/animals/Panda.jpg", name: "Panda" },
-  { src: "/assets/animals/Kangaroo.png", name: "Kangaroo" },
-  { src: "/assets/animals/Bear.jpg", name: "Bear" },
-  { src: "/assets/animals/Fox.jpg", name: "Fox" },
-  { src: "/assets/animals/Deer.jpg", name: "Deer" },
-  { src: "/assets/animals/Camel.jpg", name: "Camel" },
-  { src: "/assets/animals/Horse.jpg", name: "Horse" },
-  { src: "/assets/animals/Monkey.jpg", name: "Monkey" },
-  { src: "/assets/animals/Donkey.jpg", name: "Donkey" },
-  { src: "/assets/animals/Cow.jpg", name: "Cow" },
-  { src: "/assets/animals/Goat.jpg", name: "Goat" },
-  { src: "/assets/animals/Sheep.jpg", name: "Sheep" },
-  { src: "/assets/animals/Hen.jpg", name: "Hen" },
-  { src: "/assets/animals/Duck.jpg", name: "Duck" },
+  { src: "/assets/animals/panda.jpg", name: "Panda" },
+  { src: "/assets/animals/kangaroo.png", name: "Kangaroo" },
+  { src: "/assets/animals/bear.jpg", name: "Bear" },
+  { src: "/assets/animals/wolf.jpg", name: "Wolf" },
+  { src: "/assets/animals/fox.jpg", name: "Fox" },
+  { src: "/assets/animals/deer.jpg", name: "Deer" },
+  { src: "/assets/animals/camel.jpg", name: "Camel" },
+  { src: "/assets/animals/horse.jpg", name: "Horse" },
+  { src: "/assets/animals/monkey.jpg", name: "Monkey" },
+  { src: "/assets/animals/donkey.jpg", name: "Donkey" },
+  { src: "/assets/animals/cow.jpg", name: "Cow" },
+  { src: "/assets/animals/goat.jpg", name: "Goat" },
+  { src: "/assets/animals/sheep.jpg", name: "Sheep" },
+  { src: "/assets/animals/hen.jpg", name: "Hen" },
+  { src: "/assets/animals/duck.jpg", name: "Duck" },
 ];
 
 
@@ -41,6 +42,7 @@ function getRandomAnimals() {
   return shuffled.slice(0, 3);
 }
 
+// 3. Replace first test step
 const testSteps = [
   {
     id: "animal-guess",
@@ -115,6 +117,9 @@ const testContent = {
   }
 };
 
+// @ts-ignore
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 export default function PatientTest() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
@@ -130,12 +135,34 @@ export default function PatientTest() {
   const currentTestId = testSteps[currentStep]?.id;
   const currentTest = testContent[currentTestId as keyof typeof testContent];
 
+  // Voice input handler for animal guess
   const handleVoiceInput = () => {
-    setIsRecording(!isRecording);
-    // Placeholder for actual voice recording logic
-    setTimeout(() => {
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser.");
+      return;
+    }
+    setIsRecording(true);
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setAnimalInput(transcript); // Set the recognized text in the input box
       setIsRecording(false);
-    }, 3000);
+    };
+
+    recognition.onerror = (event: any) => {
+      setIsRecording(false);
+      alert("Voice recognition error: " + event.error);
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
   };
 
   const handlePlayAudio = () => {
